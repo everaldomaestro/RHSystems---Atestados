@@ -6,7 +6,7 @@ namespace Atestados.Domain.Services
     {
         public bool IsValid(string cnpj)
         {
-            return true;
+            return false;
         }
     }
 }
