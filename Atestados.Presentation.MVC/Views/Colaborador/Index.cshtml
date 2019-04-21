@@ -1,0 +1,63 @@
+﻿@model IEnumerable<Atestados.Presentation.MVC.ViewModels.ColaboradorViewModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Nome)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Sobrenome)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CPF)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Status)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SetorId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UnidadeId)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Nome)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Sobrenome)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CPF)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Status)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Setor.Nome)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Unidade.Nome)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ColaboradorId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ColaboradorId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ColaboradorId })
+        </td>
+    </tr>
+}
+
+</table>

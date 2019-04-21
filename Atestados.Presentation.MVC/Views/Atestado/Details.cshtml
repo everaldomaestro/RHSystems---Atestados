@@ -1,0 +1,58 @@
+﻿@model Atestados.Presentation.MVC.ViewModels.AtestadoViewModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>AtestadoViewModel</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ColaboradorId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Colaborador.Nome)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CidId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Cid.Codigo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DataInicio)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DataInicio)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.QtdDias)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.QtdDias)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ClinicaHospitalId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ClinicaHospital.Nome)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.AtestadoId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

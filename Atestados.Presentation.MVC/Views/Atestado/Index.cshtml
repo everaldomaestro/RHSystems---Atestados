@@ -1,0 +1,57 @@
+﻿@model IEnumerable<Atestados.Presentation.MVC.ViewModels.AtestadoViewModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayName("Colaborador")
+        </th>
+        <th>
+            @Html.DisplayName("Cid")
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DataInicio)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.QtdDias)
+        </th>
+        <th>
+            @Html.DisplayName("Clinica\\Hospital")
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Colaborador.Nome)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Cid.Codigo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DataInicio)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.QtdDias)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ClinicaHospital.Nome)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.AtestadoId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.AtestadoId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.AtestadoId })
+        </td>
+    </tr>
+}
+
+</table>
