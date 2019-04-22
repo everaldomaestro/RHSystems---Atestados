@@ -2,81 +2,121 @@
 using Atestados.Domain.Interfaces.Repositories;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Linq;
 
 namespace Atestados.Infra.Data.EF.Repositories
 {
     public class AtestadoRepository : RepositoryBase<Atestado>, IAtestadoRepository
     {
-        private readonly IAtestadosAuxRepository _atestadosAuxRepository;
         private readonly IColaboradorRepository _colaboradorRepository;
 
-        public AtestadoRepository(
-            IAtestadosAuxRepository atestadosAuxRepository,
-            IColaboradorRepository colaboradorRepository)
+        public AtestadoRepository(IColaboradorRepository colaboradorRepository)
         {
-            _atestadosAuxRepository = atestadosAuxRepository;
             _colaboradorRepository = colaboradorRepository;
         }
 
         public override void Add(Atestado entity)
         {
-            Db.Atestado.Add(entity);
-            Db.SaveChanges();
+            transaction = Db.Database.BeginTransaction();
 
-            for (int i = 0; i < entity.QtdDias; i++)
+            try
             {
-                _atestadosAuxRepository.Add(
-                    new AtestadosAux
-                    {
-                        AtestadoId = entity.AtestadoId,
-                        ColaboradorId = entity.ColaboradorId,
-                        SetorId = _colaboradorRepository.GetById(entity.ColaboradorId).SetorId,
-                        UnidadeId = _colaboradorRepository.GetById(entity.ColaboradorId).UnidadeId,
-                        Data = entity.DataInicio.AddDays(i)
-                    });
+                Db.Atestado.Add(entity);
+                Db.SaveChanges();
+
+                for (int i = 0; i < entity.QtdDias; i++)
+                {
+                    Db.AtestadosAux.Add(
+                        new AtestadosAux
+                        {
+                            AtestadoId = entity.AtestadoId,
+                            ColaboradorId = entity.ColaboradorId,
+                            SetorId = _colaboradorRepository.GetById(entity.ColaboradorId).SetorId,
+                            UnidadeId = _colaboradorRepository.GetById(entity.ColaboradorId).UnidadeId,
+                            Data = entity.DataInicio.AddDays(i)
+                        });
+                }
+
+                Db.SaveChanges();
+
+                transaction.Commit();
+            }
+            catch
+            {
+                transaction.Rollback();
             }
         }
 
         public override void Delete(Atestado entity)
         {
             ICollection<AtestadosAux> atestadosAux =
-                _atestadosAuxRepository.GetByAtestadoId(entity.AtestadoId);
+                Db.AtestadosAux.Where(x => x.AtestadoId == entity.AtestadoId).ToList();
 
-            foreach (var ax in atestadosAux)
+            transaction = Db.Database.BeginTransaction();
+
+            try
             {
-                _atestadosAuxRepository.Delete(ax);
-            }
+                foreach (var atestadoAux in atestadosAux)
+                {
+                    Db.Entry(atestadoAux).State = EntityState.Deleted;
+                    Db.AtestadosAux.Remove(atestadoAux);
+                }
 
-            Db.Entry(entity).State = EntityState.Deleted;
-            Db.Atestado.Remove(entity);
-            Db.SaveChanges();
+                Db.SaveChanges();
+
+                Db.Entry(entity).State = EntityState.Deleted;
+                Db.Atestado.Remove(entity);
+                Db.SaveChanges();
+
+                transaction.Commit();
+            }
+            catch
+            {
+                transaction.Rollback();
+            }
         }
 
         public override void Update(Atestado entity)
         {
             ICollection<AtestadosAux> atestadosAux =
-                _atestadosAuxRepository.GetByAtestadoId(entity.AtestadoId);
+                Db.AtestadosAux.Where(x => x.AtestadoId == entity.AtestadoId).ToList();
 
-            foreach (var ax in atestadosAux)
+            transaction = Db.Database.BeginTransaction();
+
+            try
             {
-                _atestadosAuxRepository.Delete(ax);
+                foreach (var atestadoAux in atestadosAux)
+                {
+                    Db.Entry(atestadoAux).State = EntityState.Deleted;
+                    Db.AtestadosAux.Remove(atestadoAux);
+                }
+
+                Db.SaveChanges();
+
+                Db.Entry(entity).State = EntityState.Modified;
+                Db.SaveChanges();
+
+                for (int i = 0; i < entity.QtdDias; i++)
+                {
+                    Db.AtestadosAux.Add(
+                        new AtestadosAux
+                        {
+                            AtestadoId = entity.AtestadoId,
+                            ColaboradorId = entity.ColaboradorId,
+                            SetorId = _colaboradorRepository.GetById(entity.ColaboradorId).SetorId,
+                            UnidadeId = _colaboradorRepository.GetById(entity.ColaboradorId).UnidadeId,
+                            Data = entity.DataInicio.AddDays(i)
+                        });
+                }
+
+                Db.SaveChanges();
+
+                transaction.Commit();
             }
-
-            Db.Entry(entity).State = EntityState.Modified;
-            Db.SaveChanges();
-
-            for (int i = 0; i < entity.QtdDias; i++)
+            catch
             {
-                _atestadosAuxRepository.Add(
-                    new AtestadosAux
-                    {
-                        AtestadoId = entity.AtestadoId,
-                        ColaboradorId = entity.ColaboradorId,
-                        SetorId = _colaboradorRepository.GetById(entity.ColaboradorId).SetorId,
-                        UnidadeId = _colaboradorRepository.GetById(entity.ColaboradorId).UnidadeId,
-                        Data = entity.DataInicio.AddDays(i)
-                    });
-            }
+                transaction.Rollback();
+            }           
         }
     }
 }

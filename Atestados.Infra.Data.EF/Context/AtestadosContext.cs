@@ -10,7 +10,6 @@
         public AtestadosContext()
             : base("name=Atestados")
         {
-            Configuration.LazyLoadingEnabled = true;
         }
 
         public virtual DbSet<Atestado> Atestado { get; set; }

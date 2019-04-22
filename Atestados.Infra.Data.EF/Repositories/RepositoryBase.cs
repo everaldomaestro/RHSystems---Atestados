@@ -1,14 +1,15 @@
-﻿using System.Collections.Generic;
-using Atestados.Domain.Interfaces.Repositories;
+﻿using Atestados.Domain.Interfaces.Repositories;
 using Atestados.Infra.Data.EF.Context;
-using System.Linq;
+using System.Collections.Generic;
 using System.Data.Entity;
+using System.Linq;
 
 namespace Atestados.Infra.Data.EF.Repositories
 {
     public class RepositoryBase<Entity> : IRepositoryBase<Entity> where Entity : class
     {
         protected AtestadosContext Db = new AtestadosContext();
+        protected DbContextTransaction transaction;
 
         public virtual void Add(Entity entity)
         {
