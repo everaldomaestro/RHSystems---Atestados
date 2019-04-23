@@ -13,5 +13,7 @@ namespace Atestados.Domain.Interfaces.Services
         ICollection<Entity> GetAll();
 
         Entity GetById(int id);
+
+        void Dispose();
     }
 }

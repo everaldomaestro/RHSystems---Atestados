@@ -1,12 +1,13 @@
 ﻿using Atestados.Domain.Interfaces.Repositories;
 using Atestados.Infra.Data.EF.Context;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 
 namespace Atestados.Infra.Data.EF.Repositories
 {
-    public class RepositoryBase<Entity> : IRepositoryBase<Entity> where Entity : class
+    public class RepositoryBase<Entity> : IDisposable, IRepositoryBase<Entity> where Entity : class
     {
         protected AtestadosContext Db = new AtestadosContext();
         protected DbContextTransaction transaction;
@@ -22,6 +23,11 @@ namespace Atestados.Infra.Data.EF.Repositories
             Db.Entry(entity).State = EntityState.Deleted;
             Db.Set<Entity>().Remove(entity);
             Db.SaveChanges();
+        }
+
+        public void Dispose()
+        {
+            Db.Dispose();
         }
 
         public ICollection<Entity> GetAll()

@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Atestados.App.Interfaces;
 using Atestados.Domain.Interfaces.Services;
 
 namespace Atestados.App.Services
 {
-    public class AppServiceBase<Entity> : IAppServiceBase<Entity> where Entity : class
+    public class AppServiceBase<Entity> : IDisposable, IAppServiceBase<Entity> where Entity : class
     {
         private readonly IServiceBase<Entity> _service;
 
@@ -21,6 +22,11 @@ namespace Atestados.App.Services
         public void Delete(Entity entity)
         {
             _service.Delete(entity);
+        }
+
+        public void Dispose()
+        {
+            _service.Dispose();
         }
 
         public ICollection<Entity> GetAll()

@@ -13,5 +13,7 @@ namespace Atestados.App.Interfaces
         ICollection<Entity> GetAll();
 
         Entity GetById(int id);
+
+        void Dispose();
     }
 }
